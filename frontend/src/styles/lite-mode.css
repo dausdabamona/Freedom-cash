@@ -1,0 +1,72 @@
+/* Lite Mode Performance Optimizations */
+
+/* Disable all animations and transitions in Lite Mode */
+.lite-mode *,
+.lite-mode *::before,
+.lite-mode *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* Simplify box shadows for better performance */
+.lite-mode .card,
+.lite-mode .shadow-lg,
+.lite-mode .shadow-xl {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Disable blur effects */
+.lite-mode .backdrop-blur,
+.lite-mode [class*='backdrop-'] {
+  backdrop-filter: none !important;
+}
+
+/* Simplify gradients to solid colors */
+.lite-mode [class*='gradient'] {
+  background-image: none !important;
+}
+
+/* Reduce border radius for faster rendering */
+.lite-mode .rounded-lg {
+  border-radius: 0.25rem !important;
+}
+
+.lite-mode .rounded-xl {
+  border-radius: 0.375rem !important;
+}
+
+/* Optimize font rendering */
+.lite-mode {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Hide decorative elements */
+.lite-mode .decorative,
+.lite-mode [data-decorative] {
+  display: none !important;
+}
+
+/* Simplify hover states */
+.lite-mode *:hover {
+  transform: none !important;
+}
+
+/* Disable transform animations */
+.lite-mode * {
+  will-change: auto !important;
+}
+
+/* Performance hints */
+.lite-mode img,
+.lite-mode video {
+  content-visibility: auto;
+}
+
+/* Reduce complexity of borders */
+.lite-mode [class*='border-'] {
+  border-width: 1px !important;
+}

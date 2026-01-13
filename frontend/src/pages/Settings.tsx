@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usePerformance, PerformanceMode } from '../contexts/PerformanceContext';
 
 interface SettingsData {
   monthly_living_cost: number;
@@ -19,6 +20,7 @@ function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const { mode, setMode } = usePerformance();
 
   useEffect(() => {
     fetchSettings();
@@ -152,21 +154,93 @@ function Settings() {
 
         <div className="border-t pt-6">
           <h2 className="text-xl font-bold mb-4">Preferences</h2>
-          <div>
-            <label className="label">Currency</label>
-            <select
-              className="input"
-              value={settings.currency}
-              onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-            >
-              <option value="IDR">IDR (Rp) - Rupiah Indonesia</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="JPY">JPY (¥)</option>
-              <option value="AUD">AUD (A$)</option>
-              <option value="CAD">CAD (C$)</option>
-            </select>
+
+          <div className="space-y-4">
+            <div>
+              <label className="label">Currency</label>
+              <select
+                className="input"
+                value={settings.currency}
+                onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+              >
+                <option value="IDR">IDR (Rp) - Rupiah Indonesia</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="JPY">JPY (¥)</option>
+                <option value="AUD">AUD (A$)</option>
+                <option value="CAD">CAD (C$)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="label">⚡ Performance Mode</label>
+              <div className="space-y-3">
+                <div
+                  onClick={() => setMode('normal')}
+                  className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                    mode === 'normal'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-start">
+                    <input
+                      type="radio"
+                      name="performance-mode"
+                      checked={mode === 'normal'}
+                      onChange={() => setMode('normal')}
+                      className="mt-1 mr-3"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900">Normal Mode</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Full features dengan animasi, grafik, dan semua fitur dashboard lengkap.
+                        Cocok untuk koneksi stabil dan device menengah ke atas.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => setMode('lite')}
+                  className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                    mode === 'lite'
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-start">
+                    <input
+                      type="radio"
+                      name="performance-mode"
+                      checked={mode === 'lite'}
+                      onChange={() => setMode('lite')}
+                      className="mt-1 mr-3"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900 flex items-center">
+                        🚀 Lite Mode
+                        <span className="ml-2 text-xs bg-green-600 text-white px-2 py-0.5 rounded-full">
+                          ULTRA FAST
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Dashboard minimal dengan 6 angka penting saja. Tanpa animasi, tanpa grafik.
+                        Load < 1.5s. Cocok untuk cek cepat di HP jadul atau koneksi lambat.
+                      </p>
+                      <p className="text-xs text-green-700 font-semibold mt-2">
+                        ✓ Hemat data · ✓ Hemat battery · ✓ Super cepat · ✓ One-hand usage
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-3">
+                💡 Tip: Gunakan Lite Mode untuk cek harian, Normal Mode untuk analisis detail
+              </p>
+            </div>
           </div>
         </div>
 

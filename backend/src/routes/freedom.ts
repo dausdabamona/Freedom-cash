@@ -464,6 +464,164 @@ router.post('/accelerate', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/freedom/lite
+ * Ultra-fast lite dashboard - pre-calculated, minimal data
+ * Optimized for low-end devices and daily quick checks
+ */
+router.get('/lite', async (req, res) => {
+  try {
+    const userId = req.query.user_id as string || 'demo-user';
+
+    // Get financial profile
+    const profileResult = await pool.query(
+      'SELECT * FROM financial_profiles WHERE user_id = $1',
+      [userId]
+    );
+
+    const monthlyLivingCost = parseFloat(profileResult.rows[0]?.monthly_living_cost || '0');
+
+    // Get last 3 months expenses
+    const expensesResult = await pool.query(
+      `SELECT expense_month, total_amount as amount
+       FROM monthly_expenses
+       WHERE user_id = $1
+       ORDER BY expense_month DESC
+       LIMIT 3`,
+      [userId]
+    );
+
+    const monthlyExpenses = expensesResult.rows.map(row => ({
+      month: row.expense_month,
+      amount: parseFloat(row.amount),
+    }));
+
+    // Get income sources
+    const incomeResult = await pool.query(
+      `SELECT type, monthly_amount
+       FROM income_engines
+       WHERE user_id = $1 AND is_active = true`,
+      [userId]
+    );
+
+    const incomeSources = incomeResult.rows.map(row => ({
+      type: row.type as 'active' | 'semi_passive' | 'passive',
+      monthlyAmount: parseFloat(row.monthly_amount),
+    }));
+
+    // Get assets
+    const assetsResult = await pool.query(
+      `SELECT current_value as value, monthly_yield, is_liquid
+       FROM assets
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    const assets = assetsResult.rows.map(row => ({
+      value: parseFloat(row.value),
+      monthlyYield: parseFloat(row.monthly_yield || '0'),
+      isLiquid: row.is_liquid || false,
+    }));
+
+    // Get liabilities
+    const liabilitiesResult = await pool.query(
+      `SELECT COALESCE(SUM(remaining_balance), 0) as total
+       FROM liabilities
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    const totalLiabilities = parseFloat(liabilitiesResult.rows[0]?.total || '0');
+
+    // Calculate metrics
+    const freedomInput: FreedomInput = {
+      monthlyExpenses,
+      incomeSources,
+      assets,
+      totalLiabilities,
+    };
+
+    const metrics = calculateAllMetrics(freedomInput);
+    const livingCost = metrics.livingCost > 0 ? metrics.livingCost : monthlyLivingCost;
+    const passiveIncome = metrics.passiveIncome;
+    const coverageRatio = livingCost > 0 ? passiveIncome / livingCost : 0;
+
+    // Get growth rate
+    const growthResult = await pool.query(
+      `SELECT AVG(growth_rate) as avg_growth
+       FROM income_engines
+       WHERE user_id = $1 AND is_active = true AND type IN ('passive', 'semi_passive')`,
+      [userId]
+    );
+
+    const avgGrowthRate = parseFloat(growthResult.rows[0]?.avg_growth || '8');
+
+    // Calculate projection (realistic only)
+    const projectionInput: ProjectionInput = {
+      currentPassiveIncome: passiveIncome,
+      currentLivingCost: livingCost,
+      currentLiquidAssets: metrics.liquidAssets,
+      passiveIncomeGrowthRate: avgGrowthRate,
+      livingCostInflationRate: 3,
+      assetGrowthRate: 0,
+      monthlyInvestment: 0,
+      monthlyIncomeIncrease: 0,
+    };
+
+    const projection = projectFreedomPath(projectionInput);
+    const realistic = projection.scenarios.realistic;
+
+    // Determine fastest action
+    let fastestAction = '';
+    const gap = Math.max(0, livingCost - passiveIncome);
+
+    if (coverageRatio >= 1.0) {
+      fastestAction = 'Sudah bebas! Fokus maintain & tingkatkan kualitas hidup';
+    } else if (gap > 0) {
+      const gapRupiah = formatRupiah(gap);
+
+      if (passiveIncome < livingCost * 0.5) {
+        fastestAction = `Tambah passive income +${gapRupiah}/bulan untuk capai 100%`;
+      } else if (passiveIncome < livingCost * 0.8) {
+        if (livingCost > 5000000) {
+          fastestAction = `Kurangi biaya hidup Rp1-2 juta ATAU tambah passive income ${gapRupiah}`;
+        } else {
+          fastestAction = `Tambah passive income ${gapRupiah}/bulan - hampir bebas!`;
+        }
+      } else {
+        fastestAction = `Final push! Tinggal ${gapRupiah}/bulan lagi. Fokus scaling passive income!`;
+      }
+    } else {
+      fastestAction = 'Pertahankan passive income ≥ biaya hidup';
+    }
+
+    // Determine status
+    let status: 'free' | 'approaching' | 'building';
+    if (coverageRatio >= 1.0) {
+      status = 'free';
+    } else if (coverageRatio >= 0.5) {
+      status = 'approaching';
+    } else {
+      status = 'building';
+    }
+
+    // Return minimal, pre-calculated data
+    res.json({
+      freedomDate: realistic.freedomDate,
+      monthsToFreedom: realistic.monthsToFreedom,
+      coverageRatio: Math.round(coverageRatio * 10000) / 10000,
+      passiveIncome: Math.round(passiveIncome * 100) / 100,
+      livingCost: Math.round(livingCost * 100) / 100,
+      fastestAction: fastestAction,
+      status: status,
+      calculatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Lite dashboard error:', error);
+    res.status(500).json({ error: 'Failed to load lite dashboard' });
+  }
+});
+
 // Helper function to format Rupiah
 function formatRupiah(amount: number): string {
   if (amount >= 1_000_000_000) {
