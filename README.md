@@ -105,7 +105,22 @@ See how each decision affects:
 - Freedom Score change
 - Net worth impact
 
-### 6. Settings
+### 6. Freedom Projection Engine
+Projects your path to financial freedom with 3 scenarios:
+- **Optimistic:** Above-average growth (best case)
+- **Realistic:** Expected growth (planning scenario)
+- **Conservative:** Below-average growth (risk management)
+
+Features:
+- Month-by-month projections until freedom
+- Freedom date calculation (when passive income ≥ living cost)
+- Key milestones (25%, 50%, 75%, 100% coverage)
+- Compound growth modeling
+- Compare multiple "what-if" scenarios
+
+See [PROJECTION_ENGINE.md](./PROJECTION_ENGINE.md) for complete documentation.
+
+### 7. Settings
 Configure your targets:
 - Monthly living cost
 - Emergency fund target (months)
@@ -245,6 +260,18 @@ Freedom Score =
 - `GET /api/simulator/scenarios?user_id=<id>` - List saved scenarios
 - `POST /api/simulator/scenarios` - Save simulation scenario
 - `DELETE /api/simulator/scenarios/:id` - Delete scenario
+
+### Projections
+- `GET /api/projections/quick?user_id=<id>` - Quick projection (3 scenarios)
+- `POST /api/projections/calculate` - Full custom projection
+- `GET /api/projections/monthly/:scenario?user_id=<id>` - Month-by-month breakdown
+- `POST /api/projections/compare` - Compare multiple scenarios
+- `POST /api/projections/milestones` - Get freedom milestones
+
+### Expenses
+- `GET /api/expenses?user_id=<id>` - List monthly expenses
+- `GET /api/expenses/last-3-months?user_id=<id>` - Get rolling average
+- `POST /api/expenses` - Add/update monthly expense
 
 ### Settings
 - `GET /api/settings?user_id=<id>` - Get user settings
