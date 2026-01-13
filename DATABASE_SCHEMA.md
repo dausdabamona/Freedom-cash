@@ -68,6 +68,7 @@ CREATE TABLE assets (
   monthly_yield DECIMAL(12,2) DEFAULT 0, -- actual monthly income from asset
   annual_roi DECIMAL(5,2) DEFAULT 0, -- percentage
   automation_level INTEGER CHECK (automation_level BETWEEN 1 AND 10),
+  is_liquid BOOLEAN DEFAULT true, -- can be converted to cash within 30 days
   description TEXT,
   purchase_date DATE,
   is_active BOOLEAN DEFAULT true,
@@ -145,7 +146,35 @@ CREATE TABLE freedom_snapshots (
 CREATE INDEX idx_snapshots_user_date ON freedom_snapshots(user_id, snapshot_date DESC);
 ```
 
-### 7. simulation_scenarios
+### 7. monthly_expenses
+Track actual monthly expenses for rolling 3-month average calculation
+```sql
+CREATE TABLE monthly_expenses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  expense_month DATE NOT NULL, -- First day of month (YYYY-MM-01)
+  total_amount DECIMAL(12,2) NOT NULL,
+
+  -- Optional expense breakdown
+  housing DECIMAL(12,2) DEFAULT 0,
+  food DECIMAL(12,2) DEFAULT 0,
+  transportation DECIMAL(12,2) DEFAULT 0,
+  utilities DECIMAL(12,2) DEFAULT 0,
+  insurance DECIMAL(12,2) DEFAULT 0,
+  healthcare DECIMAL(12,2) DEFAULT 0,
+  entertainment DECIMAL(12,2) DEFAULT 0,
+  other DECIMAL(12,2) DEFAULT 0,
+
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, expense_month)
+);
+
+CREATE INDEX idx_monthly_expenses_user_month ON monthly_expenses(user_id, expense_month DESC);
+```
+
+### 8. simulation_scenarios
 Store "what-if" scenarios for decision support
 ```sql
 CREATE TABLE simulation_scenarios (
@@ -174,23 +203,41 @@ CREATE TABLE simulation_scenarios (
 CREATE INDEX idx_scenarios_user ON simulation_scenarios(user_id);
 ```
 
-## Freedom Score Calculation Formula
+## Freedom Score Calculation Formula (Updated)
+
+### Core Formulas
+
+```
+1. LivingCost = AVERAGE(last_3_months_expenses)
+2. PassiveIncome = SUM(passive_sources) + SUM(semi_passive_sources)
+3. CoverageRatio = PassiveIncome / LivingCost
+4. Runway = LiquidAssets / LivingCost
+5. FreedomScore = Weighted combination of 4 components
+```
+
+### Freedom Score Components
 
 ```
 Freedom Score = (
-  Coverage_Ratio_Score * 0.35 +
-  Emergency_Fund_Score * 0.20 +
-  Debt_Score * 0.20 +
-  Income_Diversity_Score * 0.15 +
-  Net_Worth_Growth_Score * 0.10
+  Coverage_Ratio_Score * 0.40 +
+  Runway_Score * 0.30 +
+  Debt_Ratio_Score * 0.20 +
+  Asset_Productivity_Score * 0.10
 )
 
 Where:
-- Coverage_Ratio_Score = MIN(100, (passive_income / living_cost) * 100)
-- Emergency_Fund_Score = MIN(100, (emergency_fund / (living_cost * 12)) * 100)
-- Debt_Score = MAX(0, 100 - (debt_ratio * 5))
-- Income_Diversity_Score = (active_engines / target_engines) * 100
-- Net_Worth_Growth_Score = Based on 3-month trend
+- Coverage_Ratio_Score = MIN(100, coverage_ratio * 100)
+- Runway_Score = MIN(100, (runway / 12) * 100)  [12 months = 100 points]
+- Debt_Ratio_Score = MAX(0, 100 - (debt_ratio * 100))
+- Asset_Productivity_Score = MIN(100, (monthly_yield/total_assets / 0.01) * 100)  [1% monthly = 100 points]
+```
+
+### Additional Metrics
+
+```
+- DebtRatio = TotalLiabilities / TotalAssets
+- AssetProductivity = TotalMonthlyYield / TotalAssets
+- MonthsToFreedom = LOG(living_cost / passive_income) / LOG(1 + monthly_growth_rate)
 ```
 
 ## Key Relationships
@@ -199,8 +246,9 @@ Where:
 2. One User → Many Income Engines
 3. One User → Many Assets
 4. One User → Many Liabilities
-5. One User → Many Freedom Snapshots (time series)
-6. One User → Many Simulation Scenarios
+5. One User → Many Monthly Expenses
+6. One User → Many Freedom Snapshots (time series)
+7. One User → Many Simulation Scenarios
 
 ## Indexes Strategy
 

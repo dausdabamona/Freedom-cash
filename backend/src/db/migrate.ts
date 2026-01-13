@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS assets (
   monthly_yield DECIMAL(12,2) DEFAULT 0,
   annual_roi DECIMAL(5,2) DEFAULT 0,
   automation_level INTEGER CHECK (automation_level BETWEEN 1 AND 10),
+  is_liquid BOOLEAN DEFAULT true,
   description TEXT,
   purchase_date DATE,
   is_active BOOLEAN DEFAULT true,
@@ -119,6 +120,28 @@ CREATE TABLE IF NOT EXISTS freedom_snapshots (
 );
 
 CREATE INDEX IF NOT EXISTS idx_snapshots_user_date ON freedom_snapshots(user_id, snapshot_date DESC);
+
+-- Monthly expenses table for rolling 3-month average calculation
+CREATE TABLE IF NOT EXISTS monthly_expenses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  expense_month DATE NOT NULL,
+  total_amount DECIMAL(12,2) NOT NULL,
+  housing DECIMAL(12,2) DEFAULT 0,
+  food DECIMAL(12,2) DEFAULT 0,
+  transportation DECIMAL(12,2) DEFAULT 0,
+  utilities DECIMAL(12,2) DEFAULT 0,
+  insurance DECIMAL(12,2) DEFAULT 0,
+  healthcare DECIMAL(12,2) DEFAULT 0,
+  entertainment DECIMAL(12,2) DEFAULT 0,
+  other DECIMAL(12,2) DEFAULT 0,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, expense_month)
+);
+
+CREATE INDEX IF NOT EXISTS idx_monthly_expenses_user_month ON monthly_expenses(user_id, expense_month DESC);
 
 -- Simulation scenarios table
 CREATE TABLE IF NOT EXISTS simulation_scenarios (

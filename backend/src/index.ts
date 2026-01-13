@@ -7,6 +7,7 @@ import assetsRoutes from './routes/assets';
 import liabilitiesRoutes from './routes/liabilities';
 import simulatorRoutes from './routes/simulator';
 import settingsRoutes from './routes/settings';
+import expensesRoutes from './routes/expenses';
 
 dotenv.config();
 
@@ -23,12 +24,15 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/dashboard', dashboardRoutes);
+import dashboardV2Routes from './routes/dashboard-v2';
+app.use('/api/dashboard', dashboardV2Routes); // V2 uses new formulas
+app.use('/api/dashboard/v1', dashboardRoutes); // V1 for backward compatibility
 app.use('/api/income-engines', incomeEnginesRoutes);
 app.use('/api/assets', assetsRoutes);
 app.use('/api/liabilities', liabilitiesRoutes);
 app.use('/api/simulator', simulatorRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/expenses', expensesRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
