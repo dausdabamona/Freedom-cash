@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { formatCurrency } from '../utils/currency';
+import FreedomAccelerator from '../components/FreedomAccelerator';
 
 interface FreedomSummary {
   monthlyLivingCost: number;
@@ -416,6 +417,9 @@ function Dashboard() {
           )}
         </ul>
       </div>
+
+      {/* Freedom Accelerator */}
+      <FreedomAccelerator />
     </div>
   );
 }

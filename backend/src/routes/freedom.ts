@@ -209,4 +209,272 @@ router.get('/summary', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/freedom/accelerate
+ * Calculate accelerated freedom path with specific actions
+ */
+router.post('/accelerate', async (req, res) => {
+  try {
+    const userId = req.body.user_id || 'demo-user';
+    const {
+      addPassive = 0,
+      reduceCost = 0,
+      investCapital = 0,
+      investROI = 8,
+    } = req.body;
+
+    // 1. Get current state
+    const profileResult = await pool.query(
+      'SELECT * FROM financial_profiles WHERE user_id = $1',
+      [userId]
+    );
+
+    const monthlyLivingCost = parseFloat(profileResult.rows[0]?.monthly_living_cost || '0');
+
+    // Get last 3 months expenses
+    const expensesResult = await pool.query(
+      `SELECT expense_month, total_amount as amount
+       FROM monthly_expenses
+       WHERE user_id = $1
+       ORDER BY expense_month DESC
+       LIMIT 3`,
+      [userId]
+    );
+
+    const monthlyExpenses = expensesResult.rows.map(row => ({
+      month: row.expense_month,
+      amount: parseFloat(row.amount),
+    }));
+
+    // Get all income sources
+    const incomeResult = await pool.query(
+      `SELECT type, monthly_amount
+       FROM income_engines
+       WHERE user_id = $1 AND is_active = true`,
+      [userId]
+    );
+
+    const incomeSources = incomeResult.rows.map(row => ({
+      type: row.type as 'active' | 'semi_passive' | 'passive',
+      monthlyAmount: parseFloat(row.monthly_amount),
+    }));
+
+    // Get all assets
+    const assetsResult = await pool.query(
+      `SELECT current_value as value, monthly_yield, is_liquid
+       FROM assets
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    const assets = assetsResult.rows.map(row => ({
+      value: parseFloat(row.value),
+      monthlyYield: parseFloat(row.monthly_yield || '0'),
+      isLiquid: row.is_liquid || false,
+    }));
+
+    // Get total liabilities
+    const liabilitiesResult = await pool.query(
+      `SELECT COALESCE(SUM(remaining_balance), 0) as total
+       FROM liabilities
+       WHERE user_id = $1`,
+      [userId]
+    );
+
+    const totalLiabilities = parseFloat(liabilitiesResult.rows[0]?.total || '0');
+
+    // Calculate current metrics
+    const freedomInput: FreedomInput = {
+      monthlyExpenses,
+      incomeSources,
+      assets,
+      totalLiabilities,
+    };
+
+    const metrics = calculateAllMetrics(freedomInput);
+    const livingCost = metrics.livingCost > 0 ? metrics.livingCost : monthlyLivingCost;
+    const passiveIncome = metrics.passiveIncome;
+
+    // Get average growth rate
+    const growthResult = await pool.query(
+      `SELECT AVG(growth_rate) as avg_growth
+       FROM income_engines
+       WHERE user_id = $1 AND is_active = true AND type IN ('passive', 'semi_passive')`,
+      [userId]
+    );
+
+    const avgGrowthRate = parseFloat(growthResult.rows[0]?.avg_growth || '8');
+
+    // 2. Calculate BASELINE projection (current state)
+    const baselineInput: ProjectionInput = {
+      currentPassiveIncome: passiveIncome,
+      currentLivingCost: livingCost,
+      currentLiquidAssets: metrics.liquidAssets,
+      passiveIncomeGrowthRate: avgGrowthRate,
+      livingCostInflationRate: 3,
+      assetGrowthRate: 0,
+      monthlyInvestment: 0,
+      monthlyIncomeIncrease: 0,
+    };
+
+    const baselineProjection = projectFreedomPath(baselineInput);
+    const baselineRealistic = baselineProjection.scenarios.realistic;
+
+    // 3. Calculate ACCELERATED projection (with changes)
+    const monthlyIncomeFromInvestment = (investCapital * (investROI / 100)) / 12;
+    const newPassiveIncome = passiveIncome + addPassive + monthlyIncomeFromInvestment;
+    const newLivingCost = livingCost - reduceCost;
+
+    const acceleratedInput: ProjectionInput = {
+      currentPassiveIncome: newPassiveIncome,
+      currentLivingCost: newLivingCost,
+      currentLiquidAssets: metrics.liquidAssets,
+      passiveIncomeGrowthRate: avgGrowthRate,
+      livingCostInflationRate: 3,
+      assetGrowthRate: 0,
+      monthlyInvestment: 0,
+      monthlyIncomeIncrease: 0,
+    };
+
+    const acceleratedProjection = projectFreedomPath(acceleratedInput);
+    const acceleratedRealistic = acceleratedProjection.scenarios.realistic;
+
+    // 4. Calculate impact
+    const monthsAccelerated = baselineRealistic.monthsToFreedom && acceleratedRealistic.monthsToFreedom
+      ? baselineRealistic.monthsToFreedom - acceleratedRealistic.monthsToFreedom
+      : 0;
+
+    const newCoverageRatio = newLivingCost > 0 ? newPassiveIncome / newLivingCost : 0;
+    const coverageImprovement = newCoverageRatio - (passiveIncome / livingCost);
+
+    // 5. Priority Recommendations - Calculate ROI per action
+    const actions = [];
+
+    // Action 1: Add Passive Income
+    if (addPassive > 0) {
+      const incomeOnlyProjection = projectFreedomPath({
+        ...baselineInput,
+        currentPassiveIncome: passiveIncome + addPassive,
+      });
+      const incomeMonthsSaved = baselineRealistic.monthsToFreedom && incomeOnlyProjection.scenarios.realistic.monthsToFreedom
+        ? baselineRealistic.monthsToFreedom - incomeOnlyProjection.scenarios.realistic.monthsToFreedom
+        : 0;
+      const incomeEfficiency = addPassive > 0 ? incomeMonthsSaved / (addPassive / 1000000) : 0;
+
+      actions.push({
+        action: 'Tambah Passive Income',
+        amount: addPassive,
+        monthsSaved: incomeMonthsSaved,
+        efficiency: incomeEfficiency,
+        description: `+${formatRupiah(addPassive)}/bulan → hemat ${incomeMonthsSaved} bulan`,
+        priority: 1,
+      });
+    }
+
+    // Action 2: Reduce Cost
+    if (reduceCost > 0) {
+      const costOnlyProjection = projectFreedomPath({
+        ...baselineInput,
+        currentLivingCost: livingCost - reduceCost,
+      });
+      const costMonthsSaved = baselineRealistic.monthsToFreedom && costOnlyProjection.scenarios.realistic.monthsToFreedom
+        ? baselineRealistic.monthsToFreedom - costOnlyProjection.scenarios.realistic.monthsToFreedom
+        : 0;
+      const costEfficiency = reduceCost > 0 ? costMonthsSaved / (reduceCost / 1000000) : 0;
+
+      actions.push({
+        action: 'Kurangi Biaya Hidup',
+        amount: reduceCost,
+        monthsSaved: costMonthsSaved,
+        efficiency: costEfficiency,
+        description: `-${formatRupiah(reduceCost)}/bulan → hemat ${costMonthsSaved} bulan`,
+        priority: 2,
+      });
+    }
+
+    // Action 3: Invest Capital
+    if (investCapital > 0) {
+      const investOnlyProjection = projectFreedomPath({
+        ...baselineInput,
+        currentPassiveIncome: passiveIncome + monthlyIncomeFromInvestment,
+      });
+      const investMonthsSaved = baselineRealistic.monthsToFreedom && investOnlyProjection.scenarios.realistic.monthsToFreedom
+        ? baselineRealistic.monthsToFreedom - investOnlyProjection.scenarios.realistic.monthsToFreedom
+        : 0;
+      const investEfficiency = investCapital > 0 ? investMonthsSaved / (investCapital / 10000000) : 0;
+
+      actions.push({
+        action: 'Investasi Modal',
+        amount: investCapital,
+        monthlyYield: monthlyIncomeFromInvestment,
+        monthsSaved: investMonthsSaved,
+        efficiency: investEfficiency,
+        description: `${formatRupiah(investCapital)} @ ${investROI}% → +${formatRupiah(monthlyIncomeFromInvestment)}/bulan → hemat ${investMonthsSaved} bulan`,
+        priority: 3,
+      });
+    }
+
+    // Sort by efficiency (months saved per unit of money)
+    actions.sort((a, b) => b.efficiency - a.efficiency);
+    actions.forEach((action, index) => {
+      action.priority = index + 1;
+    });
+
+    // Generate recommendation
+    let recommendation = '';
+    if (actions.length > 0) {
+      const topAction = actions[0];
+      recommendation = `Aksi paling efektif: ${topAction.action}. ${topAction.description}. Ini memberikan akselerasi terbesar per Rupiah yang diinvestasikan.`;
+    } else {
+      recommendation = 'Masukkan perubahan untuk melihat rekomendasi.';
+    }
+
+    // 6. Build response
+    res.json({
+      baseline: {
+        passiveIncome: Math.round(passiveIncome * 100) / 100,
+        livingCost: Math.round(livingCost * 100) / 100,
+        coverageRatio: Math.round((passiveIncome / livingCost) * 10000) / 10000,
+        freedomDate: baselineRealistic.freedomDate,
+        monthsToFreedom: baselineRealistic.monthsToFreedom,
+        yearsToFreedom: baselineRealistic.yearsToFreedom,
+      },
+      accelerated: {
+        passiveIncome: Math.round(newPassiveIncome * 100) / 100,
+        livingCost: Math.round(newLivingCost * 100) / 100,
+        coverageRatio: Math.round(newCoverageRatio * 10000) / 10000,
+        freedomDate: acceleratedRealistic.freedomDate,
+        monthsToFreedom: acceleratedRealistic.monthsToFreedom,
+        yearsToFreedom: acceleratedRealistic.yearsToFreedom,
+      },
+      impact: {
+        monthsAccelerated: Math.round(monthsAccelerated),
+        yearsAccelerated: Math.round(monthsAccelerated / 12 * 10) / 10,
+        coverageImprovement: Math.round(coverageImprovement * 10000) / 10000,
+        incomeIncrease: Math.round((addPassive + monthlyIncomeFromInvestment) * 100) / 100,
+        expenseDecrease: Math.round(reduceCost * 100) / 100,
+      },
+      actions: actions,
+      recommendation: recommendation,
+      calculatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Accelerate calculation error:', error);
+    res.status(500).json({ error: 'Failed to calculate acceleration' });
+  }
+});
+
+// Helper function to format Rupiah
+function formatRupiah(amount: number): string {
+  if (amount >= 1_000_000_000) {
+    return `Rp${(amount / 1_000_000_000).toFixed(1)}M`;
+  } else if (amount >= 1_000_000) {
+    return `Rp${(amount / 1_000_000).toFixed(1)}Jt`;
+  } else if (amount >= 1_000) {
+    return `Rp${(amount / 1_000).toFixed(0)}Rb`;
+  } else {
+    return `Rp${amount.toFixed(0)}`;
+  }
+}
+
 export default router;

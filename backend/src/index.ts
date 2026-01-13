@@ -10,6 +10,7 @@ import settingsRoutes from './routes/settings';
 import expensesRoutes from './routes/expenses';
 import projectionsRoutes from './routes/projections';
 import freedomRoutes from './routes/freedom';
+import whatifRoutes from './routes/whatif';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/expenses', expensesRoutes);
 app.use('/api/projections', projectionsRoutes);
 app.use('/api/freedom', freedomRoutes);
+app.use('/api/whatif', whatifRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
