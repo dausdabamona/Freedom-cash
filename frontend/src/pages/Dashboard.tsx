@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { formatCurrency as formatIDR } from '../utils/currency';
 
 interface DashboardData {
   monthlyLivingCost: number;
@@ -82,12 +83,7 @@ function Dashboard() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
+    return formatIDR(amount);
   };
 
   const formatDate = (dateString: string | null) => {

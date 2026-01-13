@@ -14,7 +14,7 @@ function Settings() {
     target_emergency_months: 12,
     target_debt_ratio: 20,
     target_income_engines: 2,
-    currency: 'USD',
+    currency: 'IDR',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -159,6 +159,7 @@ function Settings() {
               value={settings.currency}
               onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
             >
+              <option value="IDR">IDR (Rp) - Rupiah Indonesia</option>
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
               <option value="GBP">GBP (£)</option>

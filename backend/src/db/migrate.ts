@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS financial_profiles (
   target_emergency_months INTEGER DEFAULT 12,
   target_debt_ratio DECIMAL(5,2) DEFAULT 20.00,
   target_income_engines INTEGER DEFAULT 2,
-  currency VARCHAR(3) DEFAULT 'USD',
+  currency VARCHAR(3) DEFAULT 'IDR',
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
   UNIQUE(user_id)

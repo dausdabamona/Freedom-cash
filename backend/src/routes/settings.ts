@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
         target_emergency_months: 12,
         target_debt_ratio: 20.00,
         target_income_engines: 2,
-        currency: 'USD',
+        currency: 'IDR',
       });
     }
 
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
       target_emergency_months = 12,
       target_debt_ratio = 20.00,
       target_income_engines = 2,
-      currency = 'USD',
+      currency = 'IDR',
     } = req.body;
 
     if (monthly_living_cost === undefined) {
