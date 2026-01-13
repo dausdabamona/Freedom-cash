@@ -61,23 +61,23 @@ function Settings() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading settings...</div>;
+    return <div className="text-center py-8">Memuat pengaturan...</div>;
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-1">Configure your financial freedom targets and preferences</p>
+        <h1 className="text-3xl font-bold text-gray-900">Pengaturan</h1>
+        <p className="text-gray-600 mt-1">Atur target kebebasan finansial dan pilihanmu</p>
       </div>
 
       {/* Settings Form */}
       <form onSubmit={handleSubmit} className="card space-y-6">
         <div>
-          <h2 className="text-xl font-bold mb-4">Living Expenses</h2>
+          <h2 className="text-xl font-bold mb-4">Pengeluaran Hidup</h2>
           <div>
-            <label className="label">Monthly Living Cost ($)</label>
+            <label className="label">Biaya Hidup per Bulan (Rp)</label>
             <input
               type="number"
               className="input"
@@ -90,16 +90,16 @@ function Settings() {
               step="0.01"
             />
             <p className="text-sm text-gray-500 mt-1">
-              Your baseline monthly expenses including rent, food, utilities, insurance, etc.
+              Total uang yang kamu keluarkan tiap bulan untuk makan, kost, listrik, internet, dll.
             </p>
           </div>
         </div>
 
         <div className="border-t pt-6">
-          <h2 className="text-xl font-bold mb-4">Freedom Targets</h2>
+          <h2 className="text-xl font-bold mb-4">Target Kebebasan</h2>
           <div className="space-y-4">
             <div>
-              <label className="label">Target Emergency Fund (months)</label>
+              <label className="label">Dana Darurat (bulan)</label>
               <input
                 type="number"
                 className="input"
@@ -111,12 +111,12 @@ function Settings() {
                 max="24"
               />
               <p className="text-sm text-gray-500 mt-1">
-                How many months of living expenses should your emergency fund cover? (Default: 12 months)
+                Dana darurat untuk berapa bulan? Ini tabungan untuk jaga-jaga kalau ada masalah mendadak. (Standar: 12 bulan)
               </p>
             </div>
 
             <div>
-              <label className="label">Target Debt Ratio (%)</label>
+              <label className="label">Batas Hutang (%)</label>
               <input
                 type="number"
                 className="input"
@@ -129,12 +129,12 @@ function Settings() {
                 step="0.1"
               />
               <p className="text-sm text-gray-500 mt-1">
-                Maximum acceptable debt-to-asset ratio. (Default: 20%, Healthy: below 30%)
+                Maksimal hutang dibanding harta. Semakin kecil semakin bagus. (Standar: 20%, Sehat: di bawah 30%)
               </p>
             </div>
 
             <div>
-              <label className="label">Target Number of Income Engines</label>
+              <label className="label">Jumlah Sumber Uang</label>
               <input
                 type="number"
                 className="input"
@@ -146,18 +146,18 @@ function Settings() {
                 max="10"
               />
               <p className="text-sm text-gray-500 mt-1">
-                How many independent income sources do you want? Diversification reduces risk. (Default: 2)
+                Berapa sumber uang yang kamu mau punya? Makin banyak makin aman. (Standar: 2)
               </p>
             </div>
           </div>
         </div>
 
         <div className="border-t pt-6">
-          <h2 className="text-xl font-bold mb-4">Preferences</h2>
+          <h2 className="text-xl font-bold mb-4">Pilihan Lainnya</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="label">Currency</label>
+              <label className="label">Mata Uang</label>
               <select
                 className="input"
                 value={settings.currency}
@@ -174,7 +174,7 @@ function Settings() {
             </div>
 
             <div>
-              <label className="label">⚡ Performance Mode</label>
+              <label className="label">⚡ Mode Tampilan</label>
               <div className="space-y-3">
                 <div
                   onClick={() => setMode('normal')}
@@ -193,10 +193,10 @@ function Settings() {
                       className="mt-1 mr-3"
                     />
                     <div>
-                      <p className="font-semibold text-gray-900">Normal Mode</p>
+                      <p className="font-semibold text-gray-900">Mode Normal</p>
                       <p className="text-sm text-gray-600 mt-1">
-                        Full features dengan animasi, grafik, dan semua fitur dashboard lengkap.
-                        Cocok untuk koneksi stabil dan device menengah ke atas.
+                        Tampilan lengkap dengan animasi, grafik, dan semua fitur.
+                        Cocok untuk koneksi internet stabil dan HP bagus.
                       </p>
                     </div>
                   </div>
@@ -220,17 +220,17 @@ function Settings() {
                     />
                     <div>
                       <p className="font-semibold text-gray-900 flex items-center">
-                        🚀 Lite Mode
+                        🚀 Mode Ringan
                         <span className="ml-2 text-xs bg-green-600 text-white px-2 py-0.5 rounded-full">
-                          ULTRA FAST
+                          SUPER CEPAT
                         </span>
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
-                        Dashboard minimal dengan 6 angka penting saja. Tanpa animasi, tanpa grafik.
-                        Load &lt; 1.5s. Cocok untuk cek cepat di HP jadul atau koneksi lambat.
+                        Tampilan sederhana hanya 6 angka penting saja. Tanpa animasi, tanpa grafik.
+                        Muat &lt; 1.5 detik. Cocok untuk HP jadul atau internet lambat.
                       </p>
                       <p className="text-xs text-green-700 font-semibold mt-2">
-                        ✓ Hemat data · ✓ Hemat battery · ✓ Super cepat · ✓ One-hand usage
+                        ✓ Hemat kuota · ✓ Hemat baterai · ✓ Super cepat · ✓ Gampang dipake satu tangan
                       </p>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ function Settings() {
               </div>
 
               <p className="text-xs text-gray-500 mt-3">
-                💡 Tip: Gunakan Lite Mode untuk cek harian, Normal Mode untuk analisis detail
+                💡 Tips: Pakai Mode Ringan untuk cek cepat tiap hari, Mode Normal untuk lihat detail
               </p>
             </div>
           </div>
@@ -246,12 +246,12 @@ function Settings() {
 
         <div className="border-t pt-6">
           <button type="submit" className="btn btn-primary w-full" disabled={saving}>
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? 'Menyimpan...' : 'Simpan Pengaturan'}
           </button>
 
           {saveSuccess && (
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
-              Settings saved successfully!
+              Pengaturan berhasil disimpan!
             </div>
           )}
         </div>
@@ -259,58 +259,58 @@ function Settings() {
 
       {/* Information Card */}
       <div className="card bg-blue-50 border-l-4 border-blue-500">
-        <h3 className="font-bold text-blue-900 mb-2">Understanding Freedom Metrics</h3>
+        <h3 className="font-bold text-blue-900 mb-2">Penjelasan Angka-angka Penting</h3>
         <ul className="space-y-2 text-sm text-blue-800">
           <li>
-            <strong>Monthly Living Cost:</strong> The foundation for calculating your Freedom Score.
-            This should include all essential expenses.
+            <strong>Biaya Hidup per Bulan:</strong> Total uang yang kamu butuhkan tiap bulan.
+            Hitung semua kebutuhan penting seperti makan, tempat tinggal, transportasi.
           </li>
           <li>
-            <strong>Emergency Fund:</strong> Financial cushion for unexpected events. 12 months is
-            recommended for financial independence.
+            <strong>Dana Darurat:</strong> Tabungan khusus untuk jaga-jaga kalau ada masalah mendadak.
+            Disarankan 12 bulan biar aman.
           </li>
           <li>
-            <strong>Debt Ratio:</strong> Liabilities divided by assets. Below 20% is excellent, above
-            50% needs attention.
+            <strong>Batas Hutang:</strong> Perbandingan hutang dengan harta. Di bawah 20% bagus banget,
+            di atas 50% harus hati-hati.
           </li>
           <li>
-            <strong>Income Engines:</strong> Multiple income sources reduce risk. Aim for at least 2,
-            with at least one being passive.
+            <strong>Sumber Uang:</strong> Makin banyak sumber uang, makin aman. Minimal 2 sumber,
+            salah satunya harus uang yang masuk otomatis.
           </li>
         </ul>
       </div>
 
       {/* Freedom Score Formula */}
       <div className="card">
-        <h3 className="font-bold text-gray-900 mb-4">Freedom Score Formula</h3>
+        <h3 className="font-bold text-gray-900 mb-4">Cara Hitung Skor Kebebasan</h3>
         <div className="space-y-2 text-sm text-gray-700">
-          <p>Your Freedom Score (0-100) is calculated using these weighted components:</p>
+          <p>Skor Kebebasanmu (0-100) dihitung dari 5 hal ini:</p>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>
-              <strong>Coverage Ratio (35%):</strong> Passive income / Living cost
+              <strong>Kebutuhan Tercukupi (35%):</strong> Uang masuk otomatis ÷ Biaya hidup
             </li>
             <li>
-              <strong>Emergency Fund (20%):</strong> Emergency fund / (Living cost × Target months)
+              <strong>Dana Darurat (20%):</strong> Dana darurat ÷ (Biaya hidup × Target bulan)
             </li>
             <li>
-              <strong>Debt Score (20%):</strong> Based on debt-to-asset ratio
+              <strong>Skor Hutang (20%):</strong> Dihitung dari perbandingan hutang dan harta
             </li>
             <li>
-              <strong>Income Diversity (15%):</strong> Number of income engines / Target
+              <strong>Keberagaman Sumber Uang (15%):</strong> Jumlah sumber uang ÷ Target
             </li>
             <li>
-              <strong>Net Worth Growth (10%):</strong> Based on 3-month trend
+              <strong>Pertumbuhan Harta (10%):</strong> Berdasarkan tren 3 bulan terakhir
             </li>
           </ul>
           <p className="mt-4 text-gray-600">
-            <strong>Financial Freedom is achieved when:</strong>
+            <strong>Kamu bebas secara finansial kalau:</strong>
             <br />
-            • Passive income ≥ Monthly living cost (Coverage Ratio ≥ 100%)
+            • Uang masuk otomatis ≥ Biaya hidup per bulan (Kebutuhan tercukupi ≥ 100%)
             <br />
-            • Emergency fund ≥ 12 months living cost
+            • Dana darurat ≥ 12 bulan biaya hidup
             <br />
-            • Debt ratio &lt; 20%
-            <br />• At least 2 independent income engines
+            • Hutang &lt; 20% dari harta
+            <br />• Punya minimal 2 sumber uang yang berbeda
           </p>
         </div>
       </div>

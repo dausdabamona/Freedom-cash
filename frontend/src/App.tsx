@@ -20,7 +20,7 @@ function LoadingFallback() {
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
         <div className="text-4xl mb-3">⚡</div>
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600">Memuat...</div>
       </div>
     </div>
   );
@@ -41,20 +41,20 @@ function Navigation() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             <Link to="/" className="text-white text-lg font-bold">
-              ⚡ Freedom Lite
+              ⚡ Kebebasan Ringan
             </Link>
             <div className="flex space-x-3">
               <Link
                 to="/accelerator"
                 className="text-gray-300 hover:text-white text-sm"
               >
-                🚀 Accelerator
+                🚀 Percepat
               </Link>
               <Link
                 to="/settings"
                 className="text-gray-300 hover:text-white text-sm"
               >
-                Settings
+                Pengaturan
               </Link>
             </div>
           </div>
@@ -69,7 +69,7 @@ function Navigation() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-white text-xl font-bold">
-              🎯 Financial Freedom Navigator
+              🎯 Navigasi Kebebasan Finansial
             </Link>
           </div>
           <div className="flex space-x-2">
@@ -77,43 +77,43 @@ function Navigation() {
               to="/"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/')}`}
             >
-              Dashboard
+              Beranda
             </Link>
             <Link
               to="/income-engines"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/income-engines')}`}
             >
-              Income Engines
+              Sumber Uang
             </Link>
             <Link
               to="/assets"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/assets')}`}
             >
-              Assets
+              Harta
             </Link>
             <Link
               to="/liabilities"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/liabilities')}`}
             >
-              Liabilities
+              Hutang
             </Link>
             <Link
               to="/simulator"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/simulator')}`}
             >
-              Simulator
+              Simulasi
             </Link>
             <Link
               to="/accelerator"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/accelerator')}`}
             >
-              Accelerator
+              Percepat
             </Link>
             <Link
               to="/settings"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/settings')}`}
             >
-              Settings
+              Pengaturan
             </Link>
           </div>
         </div>

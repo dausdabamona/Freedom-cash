@@ -79,8 +79,8 @@ function Accelerator() {
     <div className="min-h-screen bg-gray-50 p-4 pb-8">
       {/* Header */}
       <div className="max-w-md mx-auto mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">🚀 Freedom Accelerator</h1>
-        <p className="text-gray-600">Percepat kebebasan finansial dengan aksi strategis</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">🚀 Percepat Kebebasan Finansial</h1>
+        <p className="text-gray-600">Lihat seberapa cepat kamu bisa bebas dari uang dengan tindakan yang tepat</p>
       </div>
 
       {/* User Inputs */}
@@ -88,7 +88,7 @@ function Accelerator() {
         {/* Slider: Add Passive Income */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            ➕ Tambah Passive Income
+            ➕ Tambah Uang Masuk Otomatis
           </label>
           <div className="text-3xl font-bold text-green-600 mb-3">
             {formatCurrency(addPassive)}
@@ -136,7 +136,7 @@ function Accelerator() {
         {/* Input: Invest Capital */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            💰 Investasi Modal
+            💰 Uang yang Mau Ditanam
           </label>
           <input
             type="number"
@@ -149,7 +149,7 @@ function Accelerator() {
           />
           {investCapital > 0 && (
             <p className="text-sm text-gray-600 mt-2">
-              = {formatCurrency(monthlyIncomeFromInvestment)}/bulan @ {investROI}% ROI
+              = {formatCurrency(monthlyIncomeFromInvestment)}/bulan dengan hasil {investROI}%
             </p>
           )}
         </div>
@@ -157,7 +157,7 @@ function Accelerator() {
         {/* Input: Expected ROI */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            📈 Expected ROI (% per tahun)
+            📈 Untung yang Diharapkan (% per tahun)
           </label>
           <input
             type="number"
@@ -172,12 +172,12 @@ function Accelerator() {
 
         {/* Total Impact Preview */}
         <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-6 shadow-md text-white">
-          <div className="text-sm font-semibold mb-1">TOTAL IMPACT</div>
+          <div className="text-sm font-semibold mb-1">TOTAL PENGARUH</div>
           <div className="text-4xl font-bold">
             {totalMonthlyImpact >= 0 ? '+' : ''}
             {formatCurrency(totalMonthlyImpact)}
           </div>
-          <div className="text-sm opacity-90 mt-1">/bulan ke passive income</div>
+          <div className="text-sm opacity-90 mt-1">/bulan ditambah ke uang masuk otomatis</div>
         </div>
       </div>
 
@@ -185,7 +185,7 @@ function Accelerator() {
       {loading ? (
         <div className="max-w-md mx-auto text-center py-8">
           <div className="text-4xl mb-3">⚡</div>
-          <div className="text-gray-600">Calculating...</div>
+          <div className="text-gray-600">Lagi hitung...</div>
         </div>
       ) : result ? (
         <div className="max-w-md mx-auto space-y-6">
@@ -219,7 +219,7 @@ function Accelerator() {
 
           {/* Coverage Ratio: Before vs After */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="text-sm font-semibold text-gray-700 mb-4">COVERAGE RATIO</div>
+            <div className="text-sm font-semibold text-gray-700 mb-4">KEBUTUHAN TERCUKUPI BERAPA PERSEN</div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="text-xs text-gray-500 mb-1">Sebelum</div>
@@ -239,7 +239,7 @@ function Accelerator() {
           {/* Best Action Recommendation */}
           <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-6 shadow-md">
             <div className="text-sm font-semibold text-gray-800 mb-2">
-              💡 AKSI TERCEPAT SAAT INI:
+              💡 APA YANG HARUS KAMU LAKUKAN SEKARANG:
             </div>
             <div className="text-lg font-bold text-gray-900 leading-snug">
               {result.recommendation}
@@ -258,7 +258,7 @@ function Accelerator() {
 
       {/* Footer */}
       <div className="text-center mt-8 text-sm text-gray-500 max-w-md mx-auto">
-        <p>Geser slider untuk melihat dampak langsung ke freedom date-mu</p>
+        <p>Geser slider untuk lihat kapan kamu bisa bebas dari uang</p>
       </div>
     </div>
   );

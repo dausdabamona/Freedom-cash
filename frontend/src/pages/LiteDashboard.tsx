@@ -42,7 +42,7 @@ const LiteDashboard = memo(function LiteDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="text-6xl mb-4">⚡</div>
-          <div className="text-xl text-gray-600">Loading...</div>
+          <div className="text-xl text-gray-600">Memuat...</div>
         </div>
       </div>
     );
@@ -53,12 +53,12 @@ const LiteDashboard = memo(function LiteDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="text-center">
           <div className="text-6xl mb-4">❌</div>
-          <div className="text-xl text-gray-600">Failed to load data</div>
+          <div className="text-xl text-gray-600">Gagal memuat data</div>
           <button
             onClick={fetchData}
             className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold"
           >
-            Retry
+            Coba Lagi
           </button>
         </div>
       </div>
@@ -112,7 +112,7 @@ const LiteDashboard = memo(function LiteDashboard() {
 
         {/* Coverage Ratio */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">COVERAGE RATIO</div>
+          <div className="text-sm text-gray-600 mb-1">KEBUTUHAN TERCUKUPI</div>
           <div className="text-5xl font-bold text-blue-600 mb-2">
             {Math.round(data.coverageRatio * 100)}%
           </div>
@@ -129,7 +129,7 @@ const LiteDashboard = memo(function LiteDashboard() {
 
         {/* Passive Income */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">PASSIVE INCOME</div>
+          <div className="text-sm text-gray-600 mb-1">UANG MASUK OTOMATIS</div>
           <div className="text-4xl font-bold text-green-600">
             {formatCurrency(data.passiveIncome)}
           </div>
@@ -147,7 +147,7 @@ const LiteDashboard = memo(function LiteDashboard() {
 
         {/* Gap */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="text-sm text-gray-600 mb-1">GAP TERSISA</div>
+          <div className="text-sm text-gray-600 mb-1">KURANG BERAPA</div>
           <div className="text-4xl font-bold text-red-600">
             {formatCurrency(Math.max(0, data.livingCost - data.passiveIncome))}
           </div>
@@ -159,7 +159,7 @@ const LiteDashboard = memo(function LiteDashboard() {
         {/* Fastest Action - Most Important */}
         <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-6 shadow-md">
           <div className="text-sm font-semibold text-gray-800 mb-2">
-            💡 AKSI TERCEPAT SEKARANG:
+            💡 APA YANG HARUS KAMU LAKUKAN:
           </div>
           <div className="text-lg font-bold text-gray-900 leading-snug">
             {data.fastestAction}
@@ -171,14 +171,14 @@ const LiteDashboard = memo(function LiteDashboard() {
           onClick={fetchData}
           className="w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-lg active:bg-blue-700"
         >
-          🔄 Refresh Data
+          🔄 Muat Ulang
         </button>
       </div>
 
       {/* Footer Hint */}
       <div className="text-center mt-6 text-sm text-gray-500">
-        <p>Mode Lite - Ultra cepat & hemat data</p>
-        <p className="mt-1">Ubah ke Normal Mode di Settings untuk fitur lengkap</p>
+        <p>Mode Ringan - Super cepat & hemat kuota</p>
+        <p className="mt-1">Mau tampilan lengkap? Ubah ke Mode Normal di Pengaturan</p>
       </div>
     </div>
   );
