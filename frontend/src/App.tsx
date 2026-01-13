@@ -11,6 +11,7 @@ const IncomeEngines = lazy(() => import('./pages/IncomeEngines'));
 const Assets = lazy(() => import('./pages/Assets'));
 const Liabilities = lazy(() => import('./pages/Liabilities'));
 const Simulator = lazy(() => import('./pages/Simulator'));
+const Accelerator = lazy(() => import('./pages/Accelerator'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 // Loading fallback component
@@ -42,12 +43,20 @@ function Navigation() {
             <Link to="/" className="text-white text-lg font-bold">
               ⚡ Freedom Lite
             </Link>
-            <Link
-              to="/settings"
-              className="text-gray-300 hover:text-white text-sm"
-            >
-              Settings
-            </Link>
+            <div className="flex space-x-3">
+              <Link
+                to="/accelerator"
+                className="text-gray-300 hover:text-white text-sm"
+              >
+                🚀 Accelerator
+              </Link>
+              <Link
+                to="/settings"
+                className="text-gray-300 hover:text-white text-sm"
+              >
+                Settings
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -95,6 +104,12 @@ function Navigation() {
               Simulator
             </Link>
             <Link
+              to="/accelerator"
+              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/accelerator')}`}
+            >
+              Accelerator
+            </Link>
+            <Link
               to="/settings"
               className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/settings')}`}
             >
@@ -135,6 +150,7 @@ function App() {
               <Route path="/assets" element={<Assets />} />
               <Route path="/liabilities" element={<Liabilities />} />
               <Route path="/simulator" element={<Simulator />} />
+              <Route path="/accelerator" element={<Accelerator />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Suspense>

@@ -227,7 +227,7 @@ function Settings() {
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
                         Dashboard minimal dengan 6 angka penting saja. Tanpa animasi, tanpa grafik.
-                        Load < 1.5s. Cocok untuk cek cepat di HP jadul atau koneksi lambat.
+                        Load &lt; 1.5s. Cocok untuk cek cepat di HP jadul atau koneksi lambat.
                       </p>
                       <p className="text-xs text-green-700 font-semibold mt-2">
                         ✓ Hemat data · ✓ Hemat battery · ✓ Super cepat · ✓ One-hand usage
