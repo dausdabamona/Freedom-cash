@@ -1,13 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary Meta Tags -->
+    <title>Freedom Navigator - Jalan Menuju Kebebasan Finansial</title>
+    <meta name="title" content="Freedom Navigator - Jalan Menuju Kebebasan Finansial" />
+    <meta name="description" content="Track your journey to financial freedom in 36 months. Calculate passive income, coverage ratio, and freedom date with AI-powered projections." />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Freedom" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financial Freedom Navigator - 3-Year Path to Independence</title>
+
+    <!-- iOS Splash Screens (optional) -->
+    <link rel="apple-touch-startup-image" href="/splash/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/splash/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Freedom Navigator - Financial Freedom Tracker" />
+    <meta property="og:description" content="Track your journey to financial freedom in 36 months" />
+    <meta property="og:image" content="/screenshots/desktop.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Freedom Navigator - Financial Freedom Tracker" />
+    <meta property="twitter:description" content="Track your journey to financial freedom in 36 months" />
+    <meta property="twitter:image" content="/screenshots/desktop.png" />
+
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="http://localhost:3001" />
+    <link rel="dns-prefetch" href="http://localhost:3001" />
+
+    <!-- Disable tap highlight on mobile -->
+    <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Loading skeleton */
+      .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s ease-in-out infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Slide up animation */
+      @keyframes slide-up {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .animate-slide-up {
+        animation: slide-up 0.3s ease-out;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      // Register service worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {
+              console.log('[PWA] Service Worker registered:', registration.scope);
+
+              // Check for updates periodically
+              setInterval(() => {
+                registration.update();
+              }, 60 * 60 * 1000); // Every hour
+            })
+            .catch((error) => {
+              console.error('[PWA] Service Worker registration failed:', error);
+            });
+        });
+      }
+
+      // Handle messages from service worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'RELOAD') {
+            window.location.reload();
+          }
+        });
+      }
+
+      // Performance monitoring
+      window.addEventListener('load', () => {
+        if (window.performance && window.performance.timing) {
+          const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+          console.log('[Performance] Page load time:', loadTime, 'ms');
+
+          // Track if load time is under 2 seconds
+          if (loadTime < 2000) {
+            console.log('[Performance] ✅ Load time under 2 seconds!');
+          } else {
+            console.warn('[Performance] ⚠️ Load time over 2 seconds');
+          }
+        }
+      });
+    </script>
   </body>
 </html>

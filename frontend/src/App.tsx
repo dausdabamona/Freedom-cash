@@ -5,6 +5,8 @@ import Assets from './pages/Assets';
 import Liabilities from './pages/Liabilities';
 import Simulator from './pages/Simulator';
 import Settings from './pages/Settings';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import OfflineIndicator from './components/OfflineIndicator';
 
 function Navigation() {
   const location = useLocation();
@@ -70,6 +72,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        <OfflineIndicator />
         <Navigation />
         <main className="max-w-7xl mx-auto px-4 py-8">
           <Routes>
@@ -81,6 +84,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
+        <PWAInstallPrompt />
       </div>
     </Router>
   );
