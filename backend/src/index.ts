@@ -9,6 +9,7 @@ import simulatorRoutes from './routes/simulator';
 import settingsRoutes from './routes/settings';
 import expensesRoutes from './routes/expenses';
 import projectionsRoutes from './routes/projections';
+import freedomRoutes from './routes/freedom';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/simulator', simulatorRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/expenses', expensesRoutes);
 app.use('/api/projections', projectionsRoutes);
+app.use('/api/freedom', freedomRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
