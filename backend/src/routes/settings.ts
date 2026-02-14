@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db/connection';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     const result = await pool.query(
       'SELECT * FROM financial_profiles WHERE user_id = $1',
@@ -41,7 +42,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const {
-      user_id = 'demo-user',
+      user_id = DEMO_USER_ID,
       monthly_living_cost,
       target_emergency_months = 12,
       target_debt_ratio = 20.00,

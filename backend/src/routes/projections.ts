@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection';
 import { projectFreedomPath, compareScenarios, type ProjectionInput } from '../utils/projectionEngine';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
  */
 router.post('/calculate', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
 
     // Get current financial state
     const dashboardUrl = `http://localhost:${process.env.PORT || 3001}/api/dashboard/v2?user_id=${userId}`;
@@ -64,7 +65,7 @@ router.post('/calculate', async (req, res) => {
  */
 router.get('/quick', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // Get current state
     const dashboardUrl = `http://localhost:${process.env.PORT || 3001}/api/dashboard/v2?user_id=${userId}`;
@@ -130,7 +131,7 @@ router.get('/quick', async (req, res) => {
  */
 router.get('/monthly/:scenario', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
     const scenario = req.params.scenario; // optimistic, realistic, conservative
 
     if (!['optimistic', 'realistic', 'conservative'].includes(scenario)) {
@@ -232,7 +233,7 @@ router.post('/compare', async (req, res) => {
  */
 router.post('/milestones', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
 
     // Get current state
     const dashboardUrl = `http://localhost:${process.env.PORT || 3001}/api/dashboard/v2?user_id=${userId}`;

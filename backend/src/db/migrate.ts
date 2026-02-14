@@ -163,6 +163,23 @@ CREATE TABLE IF NOT EXISTS simulation_scenarios (
 );
 
 CREATE INDEX IF NOT EXISTS idx_scenarios_user ON simulation_scenarios(user_id);
+
+-- Insert demo user for development
+INSERT INTO users (id, email, password_hash, name)
+VALUES (
+  '00000000-0000-0000-0000-000000000001',
+  'demo@freedom.cash',
+  '$2b$10$placeholder',
+  'Demo User'
+) ON CONFLICT (id) DO NOTHING;
+
+-- Insert default financial profile for demo user
+INSERT INTO financial_profiles (user_id, monthly_living_cost, currency)
+VALUES (
+  '00000000-0000-0000-0000-000000000001',
+  5000000,
+  'IDR'
+) ON CONFLICT (user_id) DO NOTHING;
 `;
 
 async function runMigrations() {

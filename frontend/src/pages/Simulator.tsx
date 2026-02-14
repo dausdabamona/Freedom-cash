@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEMO_USER_ID } from '../constants';
 
 interface SimulationResult {
   current: {
@@ -44,7 +45,7 @@ function Simulator() {
       const response = await fetch('/api/simulator/impact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, user_id: 'demo-user' }),
+        body: JSON.stringify({ ...formData, user_id: DEMO_USER_ID }),
       });
 
       const data = await response.json();

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatCurrency } from '../utils/currency';
+import { DEMO_USER_ID } from '../constants';
 
 interface AcceleratorResult {
   baseline: {
@@ -49,7 +50,7 @@ function Accelerator() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: 'demo-user',
+          user_id: DEMO_USER_ID,
           addPassive,
           reduceCost,
           investCapital,

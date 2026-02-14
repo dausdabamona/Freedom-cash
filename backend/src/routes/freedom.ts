@@ -2,6 +2,7 @@ import express from 'express';
 import pool from '../db/connection';
 import { calculateAllMetrics, type FreedomInput } from '../utils/freedomFormulas';
 import { projectFreedomPath, type ProjectionInput } from '../utils/projectionEngine';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ const router = express.Router();
  */
 router.get('/summary', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // 1. Get financial profile settings
     const profileResult = await pool.query(
@@ -65,7 +66,7 @@ router.get('/summary', async (req, res) => {
 
     // 5. Get total liabilities
     const liabilitiesResult = await pool.query(
-      `SELECT COALESCE(SUM(remaining_balance), 0) as total
+      `SELECT COALESCE(SUM(remaining_amount), 0) as total
        FROM liabilities
        WHERE user_id = $1`,
       [userId]
@@ -215,7 +216,7 @@ router.get('/summary', async (req, res) => {
  */
 router.post('/accelerate', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
     const {
       addPassive = 0,
       reduceCost = 0,
@@ -275,7 +276,7 @@ router.post('/accelerate', async (req, res) => {
 
     // Get total liabilities
     const liabilitiesResult = await pool.query(
-      `SELECT COALESCE(SUM(remaining_balance), 0) as total
+      `SELECT COALESCE(SUM(remaining_amount), 0) as total
        FROM liabilities
        WHERE user_id = $1`,
       [userId]
@@ -471,7 +472,7 @@ router.post('/accelerate', async (req, res) => {
  */
 router.get('/lite', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // Get financial profile
     const profileResult = await pool.query(
@@ -525,7 +526,7 @@ router.get('/lite', async (req, res) => {
 
     // Get liabilities
     const liabilitiesResult = await pool.query(
-      `SELECT COALESCE(SUM(remaining_balance), 0) as total
+      `SELECT COALESCE(SUM(remaining_amount), 0) as total
        FROM liabilities
        WHERE user_id = $1`,
       [userId]

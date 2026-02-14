@@ -1,5 +1,6 @@
 import { useEffect, useState, memo } from 'react';
 import { formatCurrency } from '../utils/currency';
+import { DEMO_USER_ID } from '../constants';
 
 interface LiteDashboardData {
   freedomDate: string | null;
@@ -26,7 +27,7 @@ const LiteDashboard = memo(function LiteDashboard() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/freedom/lite?user_id=demo-user');
+      const response = await fetch(`/api/freedom/lite?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setData(result);
       setLastUpdate(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));

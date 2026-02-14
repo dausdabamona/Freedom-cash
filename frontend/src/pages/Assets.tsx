@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { DEMO_USER_ID } from '../constants';
 
 interface Asset {
   id: string;
@@ -35,7 +36,7 @@ function Assets() {
 
   const fetchAssets = async () => {
     try {
-      const response = await fetch('/api/assets?user_id=demo-user');
+      const response = await fetch(`/api/assets?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setAssets(result);
     } catch (error) {
@@ -55,7 +56,7 @@ function Assets() {
       await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, user_id: 'demo-user' }),
+        body: JSON.stringify({ ...formData, user_id: DEMO_USER_ID }),
       });
 
       setShowForm(false);
