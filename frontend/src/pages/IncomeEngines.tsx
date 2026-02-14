@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { DEMO_USER_ID } from '../constants';
 
 interface IncomeEngine {
   id: string;
@@ -31,7 +32,7 @@ function IncomeEngines() {
 
   const fetchEngines = async () => {
     try {
-      const response = await fetch('/api/income-engines?user_id=demo-user');
+      const response = await fetch(`/api/income-engines?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setEngines(result);
     } catch (error) {
@@ -54,7 +55,7 @@ function IncomeEngines() {
       await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, user_id: 'demo-user' }),
+        body: JSON.stringify({ ...formData, user_id: DEMO_USER_ID }),
       });
 
       setShowForm(false);

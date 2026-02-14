@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { formatCurrency } from '../utils/currency';
+import { DEMO_USER_ID } from '../constants';
 
 interface AcceleratorInputs {
   addPassive: number;
@@ -61,7 +62,7 @@ function FreedomAccelerator() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: 'demo-user',
+          user_id: DEMO_USER_ID,
           addPassive: inputs.addPassive,
           reduceCost: inputs.reduceCost,
           investCapital: inputs.investCapital,

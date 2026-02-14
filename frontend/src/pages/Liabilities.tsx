@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { DEMO_USER_ID } from '../constants';
 
 interface Liability {
   id: string;
@@ -37,7 +38,7 @@ function Liabilities() {
 
   const fetchLiabilities = async () => {
     try {
-      const response = await fetch('/api/liabilities?user_id=demo-user');
+      const response = await fetch(`/api/liabilities?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setLiabilities(result);
     } catch (error) {
@@ -57,7 +58,7 @@ function Liabilities() {
       await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, user_id: 'demo-user' }),
+        body: JSON.stringify({ ...formData, user_id: DEMO_USER_ID }),
       });
 
       setShowForm(false);

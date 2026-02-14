@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePerformance, PerformanceMode } from '../contexts/PerformanceContext';
+import { DEMO_USER_ID } from '../constants';
 
 interface SettingsData {
   monthly_living_cost: number;
@@ -28,7 +29,7 @@ function Settings() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/settings?user_id=demo-user');
+      const response = await fetch(`/api/settings?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setSettings(result);
     } catch (error) {
@@ -47,7 +48,7 @@ function Settings() {
       await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...settings, user_id: 'demo-user' }),
+        body: JSON.stringify({ ...settings, user_id: DEMO_USER_ID }),
       });
 
       setSaveSuccess(true);

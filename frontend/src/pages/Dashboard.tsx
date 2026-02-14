@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { formatCurrency } from '../utils/currency';
 import FreedomAccelerator from '../components/FreedomAccelerator';
+import { DEMO_USER_ID } from '../constants';
 
 interface FreedomSummary {
   monthlyLivingCost: number;
@@ -67,7 +68,7 @@ function Dashboard() {
 
   const fetchFreedomSummary = async () => {
     try {
-      const response = await fetch('/api/freedom/summary?user_id=demo-user');
+      const response = await fetch(`/api/freedom/summary?user_id=${DEMO_USER_ID}`);
       const result = await response.json();
       setData(result);
     } catch (error) {
