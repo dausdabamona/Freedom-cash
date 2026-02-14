@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection';
 import { calculateWhatIf, generateRiskReport, type WhatIfInput } from '../utils/whatIfCalculator';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
  */
 router.post('/calculate', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
 
     // Get current financial state if not provided
     let currentState = req.body.currentState;
@@ -72,7 +73,7 @@ router.post('/calculate', async (req, res) => {
  */
 router.post('/quick', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
     const scenarioType = req.body.scenario; // 'income', 'investment', 'expense'
 
     // Get current state
@@ -175,7 +176,7 @@ router.post('/quick', async (req, res) => {
  */
 router.post('/compare', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
     const scenarios = req.body.scenarios || [];
 
     if (!Array.isArray(scenarios) || scenarios.length === 0) {
@@ -255,7 +256,7 @@ router.post('/compare', async (req, res) => {
  */
 router.post('/optimize', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
     const constraints = {
       maxIncomeIncrease: req.body.maxIncomeIncrease || 1000,
       maxInvestment: req.body.maxInvestment || 50000,

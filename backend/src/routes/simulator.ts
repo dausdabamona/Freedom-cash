@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection';
 import { calculateFreedomScore, projectFreedomDate } from '../utils/freedomScore';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ const router = express.Router();
 router.post('/impact', async (req, res) => {
   try {
     const {
-      user_id = 'demo-user',
+      user_id = DEMO_USER_ID,
       additional_income = 0,
       additional_investment = 0,
       investment_roi = 0,
@@ -101,7 +102,7 @@ router.post('/impact', async (req, res) => {
  */
 router.get('/scenarios', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     const result = await pool.query(
       `SELECT * FROM simulation_scenarios
@@ -124,7 +125,7 @@ router.get('/scenarios', async (req, res) => {
 router.post('/scenarios', async (req, res) => {
   try {
     const {
-      user_id = 'demo-user',
+      user_id = DEMO_USER_ID,
       name,
       description = '',
       additional_income = 0,

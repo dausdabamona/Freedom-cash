@@ -9,6 +9,7 @@ import {
   type IncomeSource,
   type Asset,
 } from '../utils/freedomFormulas';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ const router = express.Router();
  */
 router.get('/v2', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // Fetch last 3 months of expenses
     const expensesResult = await pool.query(
@@ -189,7 +190,7 @@ router.get('/v2', async (req, res) => {
  */
 router.get('/v2/summary', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // Get full dashboard data
     const dashboardUrl = `http://localhost:${process.env.PORT || 3001}/api/dashboard/v2?user_id=${userId}`;

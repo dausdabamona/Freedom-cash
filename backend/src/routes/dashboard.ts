@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection';
 import { calculateFreedomScore, calculateRunway, projectFreedomDate } from '../utils/freedomScore';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   try {
     // For demo purposes, using a hardcoded user_id
     // In production, extract from JWT token
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     // Fetch financial profile
     const profileResult = await pool.query(
@@ -178,7 +179,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/snapshot', async (req, res) => {
   try {
-    const userId = req.body.user_id || 'demo-user';
+    const userId = req.body.user_id || DEMO_USER_ID;
     const snapshotDate = req.body.date || new Date().toISOString().split('T')[0];
 
     // Fetch current dashboard data

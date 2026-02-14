@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db/connection';
+import { DEMO_USER_ID } from '../constants';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
     const limit = parseInt(req.query.limit as string) || 12; // Default: last 12 months
 
     const result = await pool.query(
@@ -33,7 +34,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/last-3-months', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
 
     const result = await pool.query(
       `SELECT expense_month, total_amount
@@ -68,7 +69,7 @@ router.get('/last-3-months', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const {
-      user_id = 'demo-user',
+      user_id = DEMO_USER_ID,
       expense_month, // YYYY-MM-DD format (first day of month)
       total_amount,
       housing = 0,
@@ -201,7 +202,7 @@ router.delete('/:id', async (req, res) => {
  */
 router.get('/breakdown/:month', async (req, res) => {
   try {
-    const userId = req.query.user_id as string || 'demo-user';
+    const userId = req.query.user_id as string || DEMO_USER_ID;
     const { month } = req.params; // YYYY-MM-DD format
 
     const result = await pool.query(
